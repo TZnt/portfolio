@@ -8,10 +8,20 @@
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div class="sheet-frame" aria-hidden="true">
+  <div class="frame-ticks frame-ticks-top"></div>
+  <div class="frame-ticks frame-ticks-left"></div>
+  <span class="frame-corner tl"></span>
+  <span class="frame-corner tr"></span>
+  <span class="frame-corner bl"></span>
+  <span class="frame-corner br"></span>
+  <div class="frame-label">THÉO ZANETTI — PORTFOLIO — 2026</div>
+</div>
 
 <header class="site-header">
   <div class="wrap header-inner">
@@ -27,42 +37,45 @@
 
 <main id="top">
 
-  <section class="hero wrap">
-    <div class="hero-text">
-      <h1>Théo Zanetti</h1>
-      <p class="tagline">Développeur, ancien architecte — 42 Lausanne</p>
-      <p class="status">
-        En recherche d'un stage de fin de cursus (début 2027), ouvert aussi à un poste de développeur
-        ou à des missions freelance.
-      </p>
-      <p class="intro">
-        Architecte de formation, je me suis réorienté vers le développement après plusieurs années à
-        concevoir des outils numériques pour l'architecture et la géomatique&nbsp;: SIG, applications web,
-        administration serveur, photogrammétrie, modélisation 3D, pilotage de drone. Je termine aujourd'hui
-        ma formation à 42 Lausanne, où j'approfondis la programmation système et l'algorithmique.
-      </p>
-      <div class="hero-links">
-        <a class="btn btn-primary" href="assets/CV_Theo_Zanetti.pdf" download>Télécharger le CV</a>
-        <a class="btn" href="#projets">Voir les projets</a>
-      </div>
-    </div>
+  <section class="hero">
     <div class="hero-graphic" aria-hidden="true">
-      <svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
-        <g class="contours" fill="none" stroke-width="1.2">
-          <path d="M40,320 C110,280 150,340 220,300 C280,265 320,300 390,260" />
-          <path d="M20,260 C90,210 160,270 230,220 C290,180 330,215 400,180" />
-          <path d="M10,200 C80,150 170,205 240,155 C300,115 340,150 405,110" />
-          <path d="M30,140 C95,95 175,140 235,95 C290,55 335,85 400,50" />
-        </g>
-        <g class="marks">
-          <circle cx="230" cy="220" r="3.4" />
-          <line x1="230" y1="220" x2="270" y2="220" />
-          <text x="276" y="224">642 m</text>
-          <circle cx="320" cy="150" r="3.4" />
-          <line x1="320" y1="150" x2="360" y2="150" />
-          <text x="366" y="154">1&nbsp;180 m</text>
-        </g>
-      </svg>
+      <canvas id="scene"></canvas>
+      <div class="hero-scrim"></div>
+    </div>
+
+    <div class="wrap hero-inner">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <p class="status">
+            En recherche d'un stage de fin de cursus (début 2027), ouvert aussi à un poste de développeur
+            ou à des missions freelance.
+          </p>
+          <h1>Théo<br>Zanetti</h1>
+          <p class="tagline">Développeur, ancien architecte — 42 Lausanne</p>
+          <p class="intro">
+            Architecte de formation, je me suis réorienté vers le développement après plusieurs années à
+            coder des outils informatiques (scripts, plugins, ...) pour l'architecture et la géomatique&nbsp;: SIG, applications web,
+            administration serveur, photogrammétrie, modélisation 3D, pilotage de drone. Je suis actuellement
+            en cours de cursus à 42 Lausanne, où j'approfondis mes connaissances en informatique.
+          </p>
+          <div class="hero-links">
+            <a class="btn btn-primary" href="assets/CV_Theo_Zanetti.pdf" download>Télécharger le CV</a>
+            <a class="btn" href="#projets">Voir les projets</a>
+          </div>
+        </div>
+
+        <aside class="cartouche" aria-label="Cartouche">
+          <p class="cartouche-title">Portfolio</p>
+          <dl>
+            <div class="cartouche-row"><dt>Feuille</dt><dd>01 / 01</dd></div>
+            <div class="cartouche-row"><dt>Échelle</dt><dd>S.O.</dd></div>
+            <div class="cartouche-row"><dt>Dessiné par</dt><dd>T.Z.</dd></div>
+            <div class="cartouche-row"><dt>Révision</dt><dd>2026</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <p class="geo-tag mono">46°31′N 6°38′E — LAUSANNE</p>
     </div>
   </section>
 
@@ -70,18 +83,20 @@
     <div class="wrap">
       <h2>Projets</h2>
 
-      <article class="plate">
-        <div class="plate-meta">
-          <span class="tag tag-live">SaaS en production</span>
-          <span class="mono">2026 —</span>
+      <article class="plate plate-featured">
+        <div class="plate-head">
+          <h3>Krenolis</h3>
+          <div class="plate-status">
+            <span class="tag tag-live">SaaS en production</span>
+            <span class="mono">2026 —</span>
+          </div>
         </div>
         <div class="plate-body">
-          <h3>Krenolis</h3>
           <p>
             Une plateforme de réservation, planning d'équipes, encaissement et facturation pour les
             activités saisonnières qui emploient des intervenants indépendants&nbsp;: écoles de ski, écoles
-            de musique, studios de yoga. Elle résout des problèmes que les outils génériques ignorent —
-            un moniteur freelance qui travaille pour deux écoles clientes ne peut pas être réservé au même
+            de musique, studios de yoga, centres équestres, ... Elle résout des problèmes que les outils génériques ignorent —
+            un moniteur indépendant qui travaille pour deux établissements clients ne peut pas être réservé au même
             horaire sur les deux, sans qu'aucune des deux structures ne voie le planning de l'autre ;
             la tarification bascule seule en haute/basse saison ; la conformité fiscale française (NF525,
             facturation séquentielle) est intégrée par défaut, pas en option. Développé en marge de mon
@@ -90,7 +105,11 @@
             sur l'architecture, la logique métier et la conformité légale.
           </p>
           <ul class="stack">
-            <li>React</li><li>TypeScript</li><li>Vite</li><li>Firebase (Firestore, Functions, Hosting)</li><li>Stripe Connect</li>
+            <li><span class="swatch"></span>React</li>
+            <li><span class="swatch"></span>TypeScript</li>
+            <li><span class="swatch"></span>Vite</li>
+            <li><span class="swatch"></span>Firebase (Firestore, Functions, Hosting)</li>
+            <li><span class="swatch"></span>Stripe Connect</li>
           </ul>
           <div class="plate-shots">
             <img src="assets/krenolis-nf525.png" alt="Écran de conformité NF525 : intégrité du journal, clôtures journalières scellées par hachage SHA-256">
@@ -105,12 +124,14 @@
       </article>
 
       <article class="plate">
-        <div class="plate-meta">
-          <span class="tag tag-live">En ligne</span>
-          <span class="mono">2026</span>
+        <div class="plate-head">
+          <h3>Opus 2 — visualiseur 3D</h3>
+          <div class="plate-status">
+            <span class="tag tag-live">En ligne</span>
+            <span class="mono">2026</span>
+          </div>
         </div>
         <div class="plate-body">
-          <h3>Opus 2 — visualiseur 3D</h3>
           <p>
             Un viewer 3D en ligne pour explorer des relevés photogrammétriques et LiDAR directement
             dans le navigateur, sans installation. Développé pour l'association de l'Oppidum, dont
@@ -119,11 +140,15 @@
             sur le viewer public d'Aïoli chez MAP-Gamsau.
           </p>
           <ul class="stack">
-            <li>Three.js</li><li>JavaScript</li><li>Node.js</li>
+            <li><span class="swatch"></span>Three.js</li>
+            <li><span class="swatch"></span>JavaScript</li>
+            <li><span class="swatch"></span>Node.js</li>
           </ul>
           <div class="plate-shots">
-            <img src="assets/opus2-info-panel.jpg" alt="Fiche d'un relevé archéologique dans Opus 2, avec couches SIG et panneau d'information">
-            <img src="assets/opus2-slope-map.jpg" alt="Carte des pentes issue du LiDAR sur le terrain de Syam, dans Opus 2">
+            <img src="assets/opus2-vue-globale.jpg" alt="Vue d'ensemble du terrain de Syam dans Opus 2 : nuage de points LiDAR coloré par élévation sur fond photoréaliste 3D">
+            <img src="assets/opus2-lidar-elevation.jpg" alt="Nuage de points LiDAR de Syam coloré par élévation, avec repères archéologiques numérotés">
+            <img src="assets/opus2-fiche-lidar.jpg" alt="Fiche d'un relevé archéologique dans Opus 2, avec description, couches SIG et panneau d'information">
+            <img src="assets/opus2-google-3d.jpg" alt="Nuage de points RGB superposé au basemap photoréaliste Google 3D, avec réglages de décalage">
           </div>
           <div class="plate-links">
             <a href="http://185.246.84.184/viewer3d-app" target="_blank" rel="noopener">Voir la démo <span aria-hidden="true">↗</span></a>
@@ -132,12 +157,14 @@
       </article>
 
       <article class="plate">
-        <div class="plate-meta">
-          <span class="tag tag-live">En ligne</span>
-          <span class="mono">2023 —</span>
+        <div class="plate-head">
+          <h3>DronAge — planification de vols de drone</h3>
+          <div class="plate-status">
+            <span class="tag tag-live">En ligne</span>
+            <span class="mono">2023 —</span>
+          </div>
         </div>
         <div class="plate-body">
-          <h3>DronAge — planification de vols de drone</h3>
           <p>
             Développé pendant mon poste chez EN3D pour préparer les relevés photogrammétriques par
             drone&nbsp;: édition de waypoints calés en altitude à partir de sources topographiques variées,
@@ -146,7 +173,12 @@
             relevé.
           </p>
           <ul class="stack">
-            <li>JavaScript</li><li>Cesium</li><li>Leaflet</li><li>Firebase</li><li>Stripe</li><li>Python (plugin QGIS)</li>
+            <li><span class="swatch"></span>JavaScript</li>
+            <li><span class="swatch"></span>Cesium</li>
+            <li><span class="swatch"></span>Leaflet</li>
+            <li><span class="swatch"></span>Firebase</li>
+            <li><span class="swatch"></span>Stripe</li>
+            <li><span class="swatch"></span>Python (plugin QGIS)</li>
           </ul>
           <div class="plate-shots">
             <img src="assets/dronage-2d-grid.jpg" alt="Édition d'une grille de vol en 2D sur DronAge, avec calage d'altitude">
@@ -161,12 +193,14 @@
       </article>
 
       <article class="plate">
-        <div class="plate-meta">
-          <span class="tag">42 Lausanne</span>
-          <span class="mono">2025 —</span>
+        <div class="plate-head">
+          <h3>Projets du tronc commun 42</h3>
+          <div class="plate-status">
+            <span class="tag">42 Lausanne</span>
+            <span class="mono">2025 —</span>
+          </div>
         </div>
         <div class="plate-body">
-          <h3>Projets du tronc commun 42</h3>
           <p>
             Piscine C, algorithmique bas niveau, gestion mémoire, administration Unix, projets système
             développés en évaluation par les pairs. Le détail de chaque projet est disponible sur mon
@@ -184,57 +218,64 @@
   <section id="parcours" class="section">
     <div class="wrap">
       <h2>Parcours</h2>
-      <ul class="timeline">
-        <li class="current">
-          <span class="tl-date mono">2025 —</span>
-          <div class="tl-body">
-            <h3>42 Lausanne — Formation développement</h3>
-            <p>Pédagogie par projets et par les pairs. C / C++, Unix, algorithmique.</p>
-          </div>
-        </li>
-        <li>
-          <span class="tl-date mono">2023–2024</span>
-          <div class="tl-body">
-            <h3>EN3D — Infographiste 3D</h3>
-            <p>Développement d'un plugin QGIS (Python) pour planifier des vols de drone autonomes. Relevés photogrammétriques par drone. Collecte et exploitation de données géographiques.</p>
-          </div>
-        </li>
-        <li>
-          <span class="tl-date mono">2021–2023</span>
-          <div class="tl-body">
-            <h3>MAP-Gamsau — Ingénieur d'études</h3>
-            <p>Développement du viewer web public de la plateforme de photogrammétrie et d'annotation du patrimoine Aïoli (JavaScript / Three.js).</p>
-          </div>
-        </li>
-        <li>
-          <span class="tl-date mono">2019–2021</span>
-          <div class="tl-body">
-            <h3>MAP-Aria — Assistant de recherche</h3>
-            <p>Mise en place d'un SIG en ligne et collaboratif. Traitement et analyse de données LiDAR. Édition des cartographies présentées dans les rapports d'étude.</p>
-          </div>
-        </li>
-        <li>
-          <span class="tl-date mono">2018–2019</span>
-          <div class="tl-body">
-            <h3>Orizhome — Assistant de projet</h3>
-            <p>Modélisation 3D et rendus de projets de paysagisme.</p>
-          </div>
-        </li>
-        <li>
-          <span class="tl-date mono">2019</span>
-          <div class="tl-body">
-            <h3>Diplôme d'État d'Architecte</h3>
-            <p>Vaulx-en-Velin.</p>
-          </div>
-        </li>
-      </ul>
+      <div class="timeline-wrap">
+        <div class="elevation-rail" aria-hidden="true">
+          <svg viewBox="0 0 40 600" preserveAspectRatio="none" width="100%" height="100%">
+            <path d="M20,0 C10,50 28,90 16,140 C6,180 24,220 14,270 C6,310 22,350 15,400 C8,440 24,480 17,520 C11,555 20,580 20,600" />
+          </svg>
+        </div>
+        <ul class="timeline">
+          <li class="current">
+            <span class="tl-date mono">2025 —</span>
+            <div class="tl-body">
+              <h3>42 Lausanne — Formation développement</h3>
+              <p>Pédagogie par projets et par les pairs. C / C++, Unix, algorithmique.</p>
+            </div>
+          </li>
+          <li>
+            <span class="tl-date mono">2023–2024</span>
+            <div class="tl-body">
+              <h3>EN3D — Infographiste 3D</h3>
+              <p>Développement d'un plugin QGIS (Python) pour planifier des vols de drone autonomes. Relevés photogrammétriques par drone. Collecte et exploitation de données géographiques.</p>
+            </div>
+          </li>
+          <li>
+            <span class="tl-date mono">2021–2023</span>
+            <div class="tl-body">
+              <h3>MAP-Gamsau — Ingénieur d'études</h3>
+              <p>Développement du viewer web public de la plateforme de photogrammétrie et d'annotation du patrimoine Aïoli (JavaScript / Three.js).</p>
+            </div>
+          </li>
+          <li>
+            <span class="tl-date mono">2019–2021</span>
+            <div class="tl-body">
+              <h3>MAP-Aria — Assistant de recherche</h3>
+              <p>Mise en place d'un SIG en ligne et collaboratif. Traitement et analyse de données LiDAR. Édition des cartographies présentées dans les rapports d'étude.</p>
+            </div>
+          </li>
+          <li>
+            <span class="tl-date mono">2018–2019</span>
+            <div class="tl-body">
+              <h3>Orizhome — Assistant de projet</h3>
+              <p>Modélisation 3D et rendus de projets de paysagisme.</p>
+            </div>
+          </li>
+          <li>
+            <span class="tl-date mono">2019</span>
+            <div class="tl-body">
+              <h3>Diplôme d'État d'Architecte</h3>
+              <p>Vaulx-en-Velin.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <section id="competences" class="section">
     <div class="wrap">
       <h2>Compétences</h2>
-      <dl class="skills">
+      <dl class="skills legend">
         <div class="skills-row">
           <dt>Langages</dt>
           <dd class="mono">C · C++ · Python · JavaScript · TypeScript · HTML / CSS</dd>
@@ -262,12 +303,14 @@
   <section id="contact" class="section">
     <div class="wrap">
       <h2>Contact</h2>
-      <p class="contact-intro">Stage, poste de développeur ou mission freelance — n'hésitez pas à me contacter.</p>
-      <ul class="contact-list">
-        <li><a href="mailto:zanetti.theo@gmail.com">zanetti.theo@gmail.com</a></li>
-        <li><a href="https://www.linkedin.com/in/theo-zanetti" target="_blank" rel="noopener">LinkedIn</a></li>
-        <li><a href="https://github.com/TZnt" target="_blank" rel="noopener">GitHub</a></li>
-      </ul>
+      <div class="stamp">
+        <p class="contact-intro">Stage, poste de développeur ou mission freelance — n'hésitez pas à me contacter.</p>
+        <dl class="contact-list">
+          <div class="contact-row"><dt>Email</dt><dd><a href="mailto:zanetti.theo@gmail.com">zanetti.theo@gmail.com</a></dd></div>
+          <div class="contact-row"><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/theo-zanetti" target="_blank" rel="noopener">linkedin.com/in/theo-zanetti <span aria-hidden="true">↗</span></a></dd></div>
+          <div class="contact-row"><dt>GitHub</dt><dd><a href="https://github.com/TZnt" target="_blank" rel="noopener">github.com/TZnt <span aria-hidden="true">↗</span></a></dd></div>
+        </dl>
+      </div>
     </div>
   </section>
 
@@ -275,10 +318,12 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>Théo Zanetti — <span id="year"></span></p>
+    <p class="mono">T. ZANETTI — <span id="year"></span> — 46°31′N 6°38′E</p>
   </div>
 </footer>
 
 <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+<script src="scene.js"></script>
 </body>
 </html>
