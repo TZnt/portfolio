@@ -8,23 +8,23 @@ if (canvas && window.THREE) {
 }
 
 function initScene(canvas) {
-  const BG = 0x0c2340;
-  const LOW = new THREE.Color(0x123056);
-  const MID = new THREE.Color(0x4d76a3);
-  const HIGH = new THREE.Color(0xeaf2fa);
-  const PEAK = new THREE.Color(0xff5a2e);
+  const BG = 0x0e0e10;
+  const LOW = new THREE.Color(0x1f1f24);
+  const MID = new THREE.Color(0x6b6b73);
+  const HIGH = new THREE.Color(0xecebe8);
+  const PEAK = new THREE.Color(0x00ab7a);
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isSmall = canvas.clientWidth < 720;
+  const isSmall = window.innerWidth < 720;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setClearColor(BG, 1);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1.5 : 2));
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(BG, 16, 40);
+  scene.fog = new THREE.Fog(BG, 24, 52);
 
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
 
   // ---------- terrain: procedural point-cloud (LiDAR / photogrammetry look) ----------
   function hash(x, y) {
@@ -52,6 +52,14 @@ function initScene(canvas) {
   const cols = isSmall ? 80 : 140;
   const rows = isSmall ? 52 : 92;
   const width = 46, depth = 30, amp = 6;
+
+  // même formule que le nuage de points : sert à coller la trajectoire au sol
+  function terrainHeight(x, z) {
+    const u = x / width + 0.5, v = z / depth + 0.5;
+    const cu = (u - 0.5) * 2, cv = (v - 0.5) * 2;
+    const dist = Math.min(1, Math.sqrt(cu * cu + cv * cv));
+    return fbm(u * 3.4, v * 3.4) * Math.pow(1 - dist, 1.6) * amp;
+  }
 
   const count = cols * rows;
   const positions = new Float32Array(count * 3);
@@ -90,7 +98,7 @@ function initScene(canvas) {
   geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
   const material = new THREE.PointsMaterial({
-    size: isSmall ? 0.1 : 0.085,
+    size: isSmall ? 0.12 : 0.1,
     vertexColors: true,
     transparent: true,
     opacity: 0.92,
@@ -99,8 +107,9 @@ function initScene(canvas) {
   const points = new THREE.Points(geometry, material);
   scene.add(points);
 
-  // ---------- flight path: the drone's survey grid, flown live above the terrain ----------
-  const hoverY = amp * 1.35;
+  // ---------- flight path: the drone's survey grid, flown at a fixed height above the ground ----------
+  const clearance = 0.8;
+  const step = 0.5;
   const xL = -width * 0.33, xR = width * 0.33;
   const zTop = -depth * 0.32, zBot = depth * 0.32;
   const legs = 5;
@@ -112,45 +121,52 @@ function initScene(canvas) {
     else wp.push([xR, z], [xL, z]);
   }
 
-  const curvePath = new THREE.CurvePath();
-  const linePts = [];
+  // points de subdivision : chaque segment est découpé tous les `step` pour épouser le relief
+  const above = (x, z) => new THREE.Vector3(x, terrainHeight(x, z) + clearance, z);
+  const linePts = [above(wp[0][0], wp[0][1])];
   for (let k = 0; k < wp.length - 1; k++) {
-    const a = new THREE.Vector3(wp[k][0], hoverY, wp[k][1]);
-    const b = new THREE.Vector3(wp[k + 1][0], hoverY, wp[k + 1][1]);
-    curvePath.add(new THREE.LineCurve3(a, b));
-    linePts.push(a);
+    const [x0, z0] = wp[k], [x1, z1] = wp[k + 1];
+    const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, z1 - z0) / step));
+    for (let j = 1; j <= n; j++) {
+      const f = j / n;
+      linePts.push(above(x0 + (x1 - x0) * f, z0 + (z1 - z0) * f));
+    }
   }
-  linePts.push(new THREE.Vector3(wp[wp.length - 1][0], hoverY, wp[wp.length - 1][1]));
+
+  const curvePath = new THREE.CurvePath();
+  for (let k = 0; k < linePts.length - 1; k++) {
+    curvePath.add(new THREE.LineCurve3(linePts[k], linePts[k + 1]));
+  }
 
   const pathGeometry = new THREE.BufferGeometry().setFromPoints(linePts);
-  const pathMaterial = new THREE.LineBasicMaterial({ color: 0x4d76a3, transparent: true, opacity: 0.45 });
+  const pathMaterial = new THREE.LineBasicMaterial({ color: 0x6b6b73, transparent: true, opacity: 0.45 });
   scene.add(new THREE.Line(pathGeometry, pathMaterial));
 
   const markerGeo = new THREE.BoxGeometry(0.22, 0.22, 0.22);
-  const markerMat = new THREE.MeshBasicMaterial({ color: 0x8fb0cc, transparent: true, opacity: 0.5 });
+  const markerMat = new THREE.MeshBasicMaterial({ color: 0x9d9da4, transparent: true, opacity: 0.5 });
   wp.forEach(([x, z]) => {
     const m = new THREE.Mesh(markerGeo, markerMat);
-    m.position.set(x, hoverY, z);
+    m.position.copy(above(x, z));
     scene.add(m);
   });
 
   const drone = new THREE.Mesh(
     new THREE.SphereGeometry(0.22, 12, 12),
-    new THREE.MeshBasicMaterial({ color: 0xff5a2e })
+    new THREE.MeshBasicMaterial({ color: 0x00ab7a })
   );
   const droneGlow = new THREE.Mesh(
     new THREE.SphereGeometry(0.6, 12, 12),
-    new THREE.MeshBasicMaterial({ color: 0xff5a2e, transparent: true, opacity: 0.25 })
+    new THREE.MeshBasicMaterial({ color: 0x00ab7a, transparent: true, opacity: 0.25 })
   );
   scene.add(drone, droneGlow);
 
   // ---------- camera + render loop ----------
-  const target = new THREE.Vector3(0, 1, 0);
+  const target = new THREE.Vector3(0, -0.5, 0);
   let angle = Math.PI * 0.15;
-  const radius = 17;
+  let radius = 22;
 
   function frameCamera() {
-    camera.position.set(Math.sin(angle) * radius, 8, Math.cos(angle) * radius);
+    camera.position.set(Math.sin(angle) * radius, 10, Math.cos(angle) * radius);
     camera.lookAt(target);
   }
   frameCamera();
@@ -159,7 +175,9 @@ function initScene(canvas) {
     const w = canvas.clientWidth || 1;
     const h = canvas.clientHeight || 1;
     camera.aspect = w / h;
+    radius = 22 * Math.max(1, 2.2 / camera.aspect);
     camera.updateProjectionMatrix();
+    frameCamera();
     renderer.setSize(w, h, false);
   }
   window.addEventListener("resize", resize);

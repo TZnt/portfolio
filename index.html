@@ -5,23 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Théo Zanetti — Développeur, ancien architecte</title>
 <meta name="description" content="Portfolio de Théo Zanetti : développeur en formation à 42 Lausanne, ancien architecte reconverti via la géomatique et la 3D web. Projets, parcours et contact.">
+<meta name="theme-color" content="#0e0e10">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="sheet-frame" aria-hidden="true">
-  <div class="frame-ticks frame-ticks-top"></div>
-  <div class="frame-ticks frame-ticks-left"></div>
-  <span class="frame-corner tl"></span>
-  <span class="frame-corner tr"></span>
-  <span class="frame-corner bl"></span>
-  <span class="frame-corner br"></span>
-  <div class="frame-label">THÉO ZANETTI — PORTFOLIO — 2026</div>
-</div>
+<a class="skip-link" href="#projets">Aller au contenu</a>
 
 <header class="site-header">
   <div class="wrap header-inner">
@@ -38,11 +31,6 @@
 <main id="top">
 
   <section class="hero">
-    <div class="hero-graphic" aria-hidden="true">
-      <canvas id="scene"></canvas>
-      <div class="hero-scrim"></div>
-    </div>
-
     <div class="wrap hero-inner">
       <div class="hero-grid">
         <div class="hero-text">
@@ -63,19 +51,7 @@
             <a class="btn" href="#projets">Voir les projets</a>
           </div>
         </div>
-
-        <aside class="cartouche" aria-label="Cartouche">
-          <p class="cartouche-title">Portfolio</p>
-          <dl>
-            <div class="cartouche-row"><dt>Feuille</dt><dd>01 / 01</dd></div>
-            <div class="cartouche-row"><dt>Échelle</dt><dd>S.O.</dd></div>
-            <div class="cartouche-row"><dt>Dessiné par</dt><dd>T.Z.</dd></div>
-            <div class="cartouche-row"><dt>Révision</dt><dd>2026</dd></div>
-          </dl>
-        </aside>
       </div>
-
-      <p class="geo-tag mono">46°31′N 6°38′E — LAUSANNE</p>
     </div>
   </section>
 
@@ -84,6 +60,7 @@
       <h2>Projets</h2>
 
       <article class="plate plate-featured">
+        <canvas class="plate-bg" id="agenda" aria-hidden="true"></canvas>
         <div class="plate-head">
           <h3>Krenolis</h3>
           <div class="plate-status">
@@ -112,9 +89,9 @@
             <li><span class="swatch"></span>Stripe Connect</li>
           </ul>
           <div class="plate-shots">
-            <img src="assets/krenolis-nf525.png" alt="Écran de conformité NF525 : intégrité du journal, clôtures journalières scellées par hachage SHA-256">
-            <img src="assets/krenolis-planning.png" alt="Planning global multi-moniteurs de Krenolis, vue par jour">
-            <img src="assets/krenolis-stats.png" alt="Statistiques Krenolis : chiffre d'affaires par moniteur et par discipline">
+            <img width="1800" height="963" loading="lazy" decoding="async" src="assets/krenolis-nf525.png" alt="Écran de conformité NF525 : intégrité du journal, clôtures journalières scellées par hachage SHA-256">
+            <img width="1800" height="963" loading="lazy" decoding="async" src="assets/krenolis-planning.png" alt="Planning global multi-moniteurs de Krenolis, vue par jour">
+            <img width="1800" height="963" loading="lazy" decoding="async" src="assets/krenolis-stats.png" alt="Statistiques Krenolis : chiffre d'affaires par moniteur et par discipline">
           </div>
           <div class="plate-links">
             <a href="https://krenolis.fr" target="_blank" rel="noopener">Voir le site <span aria-hidden="true">↗</span></a>
@@ -145,10 +122,10 @@
             <li><span class="swatch"></span>Node.js</li>
           </ul>
           <div class="plate-shots">
-            <img src="assets/opus2-vue-globale.jpg" alt="Vue d'ensemble du terrain de Syam dans Opus 2 : nuage de points LiDAR coloré par élévation sur fond photoréaliste 3D">
-            <img src="assets/opus2-lidar-elevation.jpg" alt="Nuage de points LiDAR de Syam coloré par élévation, avec repères archéologiques numérotés">
-            <img src="assets/opus2-fiche-lidar.jpg" alt="Fiche d'un relevé archéologique dans Opus 2, avec description, couches SIG et panneau d'information">
-            <img src="assets/opus2-google-3d.jpg" alt="Nuage de points RGB superposé au basemap photoréaliste Google 3D, avec réglages de décalage">
+            <img width="1280" height="685" loading="lazy" decoding="async" src="assets/opus2-vue-globale.jpg" alt="Vue d'ensemble du terrain de Syam dans Opus 2 : nuage de points LiDAR coloré par élévation sur fond photoréaliste 3D">
+            <img width="1280" height="685" loading="lazy" decoding="async" src="assets/opus2-lidar-elevation.jpg" alt="Nuage de points LiDAR de Syam coloré par élévation, avec repères archéologiques numérotés">
+            <img width="1280" height="685" loading="lazy" decoding="async" src="assets/opus2-fiche-lidar.jpg" alt="Fiche d'un relevé archéologique dans Opus 2, avec description, couches SIG et panneau d'information">
+            <img width="1280" height="685" loading="lazy" decoding="async" src="assets/opus2-google-3d.jpg" alt="Nuage de points RGB superposé au basemap photoréaliste Google 3D, avec réglages de décalage">
           </div>
           <div class="plate-links">
             <a href="http://185.246.84.184/viewer3d-app" target="_blank" rel="noopener">Voir la démo <span aria-hidden="true">↗</span></a>
@@ -157,6 +134,7 @@
       </article>
 
       <article class="plate">
+        <canvas class="plate-bg plate-bg-top" id="scene" aria-hidden="true"></canvas>
         <div class="plate-head">
           <h3>DronAge — planification de vols de drone</h3>
           <div class="plate-status">
@@ -181,8 +159,8 @@
             <li><span class="swatch"></span>Python (plugin QGIS)</li>
           </ul>
           <div class="plate-shots">
-            <img src="assets/dronage-2d-grid.jpg" alt="Édition d'une grille de vol en 2D sur DronAge, avec calage d'altitude">
-            <img src="assets/dronage-3d-mission.jpg" alt="Contrôle de la mission dans une scène 3D avant le vol sur DronAge">
+            <img width="1280" height="641" loading="lazy" decoding="async" src="assets/dronage-2d-grid.jpg" alt="Édition d'une grille de vol en 2D sur DronAge, avec calage d'altitude">
+            <img width="1280" height="641" loading="lazy" decoding="async" src="assets/dronage-3d-mission.jpg" alt="Contrôle de la mission dans une scène 3D avant le vol sur DronAge">
           </div>
           <div class="plate-links">
             <a href="https://dronage.fr" target="_blank" rel="noopener">Voir le site <span aria-hidden="true">↗</span></a>
@@ -318,12 +296,13 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p class="mono">T. ZANETTI — <span id="year"></span> — 46°31′N 6°38′E</p>
+    <p class="mono">© <span id="year"></span> Théo Zanetti — Lausanne</p>
   </div>
 </footer>
 
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+<script src="agenda.js"></script>
 <script src="scene.js"></script>
 </body>
 </html>
