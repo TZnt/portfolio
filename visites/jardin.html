@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jardin botanique — visite 3D & VR annotée</title>
+    <meta
+      name="description"
+      content="Visite virtuelle 3D et VR d'un jardin botanique américain — gaussian splatting (Three.js, Spark), fiches scientifiques mises en page avec Pretext."
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #0b120c;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+      #app canvas {
+        display: block;
+        touch-action: none;
+      }
+
+      #loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: radial-gradient(120% 120% at 50% 30%, #13241a 0%, #0b120c 70%);
+        color: #eaf0e4;
+        z-index: 10;
+        transition: opacity 0.8s ease;
+      }
+      #loader.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #loader h1 {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-weight: 600;
+        font-size: clamp(28px, 5vw, 44px);
+        letter-spacing: 0.04em;
+        margin: 0;
+      }
+      #loader p {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #8fa389;
+      }
+      #bar {
+        width: min(320px, 70vw);
+        height: 2px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      #bar > div {
+        height: 100%;
+        width: 0%;
+        background: #9cc96a;
+        transition: width 0.2s ease;
+      }
+
+      #credit {
+        position: fixed;
+        left: 12px;
+        bottom: 10px;
+        z-index: 5;
+        font-size: 11px;
+        color: rgba(234, 240, 228, 0.45);
+        letter-spacing: 0.02em;
+      }
+      #credit a {
+        color: rgba(156, 201, 106, 0.8);
+        text-decoration: none;
+      }
+
+      /* Bouton VR de three.js, reteinté aux couleurs du jardin. */
+      #VRButton {
+        background: rgba(11, 18, 12, 0.8) !important;
+        border-color: #9cc96a !important;
+        color: #eaf0e4 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/jardin-CknERV0w.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/engine-DdEFEcBu.js">
+    <link rel="stylesheet" crossorigin href="./assets/engine-DQ19ffy6.css">
+  </head>
+  <body>
+<a id="back-link" href="../#visites" style="position:fixed;top:12px;left:12px;z-index:100;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.85);color:#0d1030;font:600 14px/1 system-ui,sans-serif;text-decoration:none;backdrop-filter:blur(8px)">← Portfolio</a>
+    <div id="app"></div>
+
+    <div id="loader">
+      <h1>Jardin botanique</h1>
+      <p>Chargement de la scène — <span id="pct">0</span>&nbsp;%</p>
+      <div id="bar"><div></div></div>
+    </div>
+
+    <div id="credit">
+      Scan&nbsp;:
+      <a href="https://superspl.at/scene/7e49cd8d" target="_blank" rel="noopener"
+        >Simon Bethke</a
+      >
+      (CC&nbsp;BY-SA&nbsp;4.0) · Three.js · Spark · Pretext
+    </div>
+
+  <script>if(window.top!==window.self){var b=document.getElementById("back-link");if(b)b.remove();}</script>
+</body>
+</html>

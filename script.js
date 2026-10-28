@@ -67,3 +67,22 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }, { rootMargin: "-45% 0px -50% 0px" });
   targets.forEach((t) => t && io.observe(t));
 })();
+
+// Visites 3D : la scène se charge dans la page, au clic seulement (16 à 29 Mo)
+document.querySelectorAll(".stage").forEach((stage) => {
+  const start = stage.querySelector(".stage-start");
+  start.addEventListener("click", () => {
+    const frame = document.createElement("iframe");
+    frame.src = stage.dataset.src;
+    frame.title = stage.dataset.title;
+    frame.allow = "fullscreen; xr-spatial-tracking";
+    frame.allowFullscreen = true;
+    const full = document.createElement("button");
+    full.type = "button";
+    full.className = "stage-full";
+    full.textContent = "Plein écran";
+    full.addEventListener("click", () => (frame.requestFullscreen || frame.webkitRequestFullscreen).call(frame));
+    start.remove();
+    stage.append(frame, full);
+  });
+});

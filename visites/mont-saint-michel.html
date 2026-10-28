@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Le Mont Saint-Michel — visite 3D annotée</title>
+    <meta
+      name="description"
+      content="Visite 3D annotée du Mont Saint-Michel — gaussian splatting rendu avec Three.js et Spark, texte mis en page avec Pretext."
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #0a0e17;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+      #app canvas {
+        display: block;
+        touch-action: none;
+      }
+
+      #loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: radial-gradient(120% 120% at 50% 30%, #141c30 0%, #0a0e17 70%);
+        color: #e8e4d8;
+        z-index: 10;
+        transition: opacity 0.8s ease;
+      }
+      #loader.done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #loader h1 {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-weight: 600;
+        font-size: clamp(28px, 5vw, 44px);
+        letter-spacing: 0.04em;
+        margin: 0;
+      }
+      #loader p {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #8d94a8;
+      }
+      #bar {
+        width: min(320px, 70vw);
+        height: 2px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      #bar > div {
+        height: 100%;
+        width: 0%;
+        background: #d8b96a;
+        transition: width 0.2s ease;
+      }
+
+      #credit {
+        position: fixed;
+        left: 12px;
+        bottom: 10px;
+        z-index: 5;
+        font-size: 11px;
+        color: rgba(232, 228, 216, 0.45);
+        letter-spacing: 0.02em;
+      }
+      #credit a {
+        color: rgba(216, 185, 106, 0.75);
+        text-decoration: none;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/main-BgTtl44k.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/engine-DdEFEcBu.js">
+    <link rel="stylesheet" crossorigin href="./assets/engine-DQ19ffy6.css">
+  </head>
+  <body>
+<a id="back-link" href="../#visites" style="position:fixed;top:12px;left:12px;z-index:100;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.85);color:#0d1030;font:600 14px/1 system-ui,sans-serif;text-decoration:none;backdrop-filter:blur(8px)">← Portfolio</a>
+    <div id="app"></div>
+
+    <div id="loader">
+      <h1>Le Mont Saint-Michel</h1>
+      <p>Chargement de la scène — <span id="pct">0</span>&nbsp;%</p>
+      <div id="bar"><div></div></div>
+    </div>
+
+    <div id="credit">
+      Scan&nbsp;:
+      <a href="https://superspl.at/scene/7e1bd643" target="_blank" rel="noopener"
+        >Mykhailo Moroz</a
+      >
+      (CC&nbsp;BY&nbsp;4.0) · Three.js · Spark · Pretext
+    </div>
+
+  <script>if(window.top!==window.self){var b=document.getElementById("back-link");if(b)b.remove();}</script>
+</body>
+</html>

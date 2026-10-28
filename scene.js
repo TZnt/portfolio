@@ -119,7 +119,7 @@ function initTerrain(canvas) {
         p.y += near * 0.9;
 
         // courbes de niveau : les points proches d'un palier de hauteur sont assombris
-        float band = fract(position.y * 0.9);
+        float band = fract(position.y * 0.33);
         vContour = smoothstep(0.0, 0.1, band) * (1.0 - smoothstep(0.9, 1.0, band));
 
         vec3 col = ramp(clamp(h, 0.0, 1.0));
@@ -147,22 +147,32 @@ function initTerrain(canvas) {
   const points = new THREE.Points(geometry, material);
   scene.add(points);
 
-  // ---------- vrai relevé LiDAR (swisstopo swissSURFACE3D, Lavaux, canton de Vaud) ----------
+  // ---------- vrai relevé LiDAR : le Cervin (swisstopo swissSURFACE3D, Valais) ----------
+  const view = {
+    pos: new THREE.Vector3(0, isSmall ? 15 : 11, isSmall ? 62 : 54),
+    target: new THREE.Vector3(0, 3, 0),
+    shift: 0,
+  };
+  let heightGrid = null;                        // hauteur (unités scène) par cellule, pour la sonde
   let altitudeAt = (x, z) => 412 + heightAt(x, z) * 6.5;
+  let gridInfo = null;
 
-  fetch("assets/lavaux.bin")
+  fetch("assets/cervin.bin")
     .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.status))))
     .then((buf) => {
       const head = new DataView(buf, 0, 28);
       const n = head.getUint32(0, true);
       const sizeX = head.getFloat32(4, true), sizeY = head.getFloat32(8, true);
       const zMin = head.getFloat32(12, true), zMax = head.getFloat32(16, true);
+      const cell = head.getFloat32(20, true);
       const rec = new DataView(buf, 28);
 
-      const S = 0.058;                          // unités de scène par mètre
-      const VEX = 1.15;                         // légère exagération verticale
+      const S = isSmall ? 0.03 : 0.032;         // unités de scène par mètre
+      const VEX = 0.9;                          // relief légèrement tassé pour tenir à l'écran
+      const N = Math.round(sizeX / cell) + 1;
       const px = new Float32Array(n * 3), ph = new Float32Array(n), pk = new Float32Array(n);
-      const grid = new Float32Array(400 * 400).fill(-1);
+      heightGrid = new Float32Array(N * N).fill(-1);
+      let top = 0, topY = -1;
       for (let i = 0; i < n; i++) {
         const o = i * 8;
         const fx = rec.getUint16(o, true) / 65535, fy = rec.getUint16(o + 2, true) / 65535;
@@ -171,10 +181,11 @@ function initTerrain(canvas) {
         const z = (0.5 - fy) * sizeY * S;       // le nord part vers le fond de la scène
         const y = fz * (zMax - zMin) * S * VEX;
         px[i * 3] = x; px[i * 3 + 1] = y; px[i * 3 + 2] = z;
-        ph[i] = Math.min(1, fz * 1.05);
+        ph[i] = Math.min(1, fz * 1.04);
         pk[i] = rec.getUint8(o + 6);
-        const gx = Math.min(399, Math.floor(fx * 400)), gz = Math.min(399, Math.floor((1 - fy) * 400));
-        grid[gz * 400 + gx] = Math.max(grid[gz * 400 + gx], fz);
+        const gx = Math.min(N - 1, Math.round(fx * (N - 1))), gz = Math.min(N - 1, Math.round((1 - fy) * (N - 1)));
+        if (y > heightGrid[gz * N + gx]) heightGrid[gz * N + gx] = y;
+        if (y > topY) { topY = y; top = i; }
       }
       const g = new THREE.BufferGeometry();
       g.setAttribute("position", new THREE.BufferAttribute(px, 3));
@@ -182,22 +193,36 @@ function initTerrain(canvas) {
       g.setAttribute("k", new THREE.BufferAttribute(pk, 1));
       points.geometry.dispose();
       points.geometry = g;
-      uniforms.uSize.value *= isSmall ? 0.9 : 0.85;
+      uniforms.uSize.value *= isSmall ? 1.5 : 1.7;
 
+      gridInfo = { N, w: sizeX * S, d: sizeY * S };
       altitudeAt = (x, z) => {
-        const gx = Math.floor((x / (sizeX * S) + 0.5) * 400), gz = Math.floor((z / (sizeY * S) + 0.5) * 400);
-        if (gx < 0 || gz < 0 || gx > 399 || gz > 399 || grid[gz * 400 + gx] < 0) return null;
-        return zMin + grid[gz * 400 + gx] * (zMax - zMin);
+        const h = sceneHeightAt(x, z);
+        return h == null ? null : zMin + (h / (S * VEX));
       };
-      target.set(0, 8, -8);
+
+      // vue du nord-est, celle de Zermatt : le sommet au centre-droit de l'écran
+      const sx = px[top * 3], sz = px[top * 3 + 2];
+      view.target.set(sx, topY * 0.56, sz);
+      view.pos.set(sx + (isSmall ? 70 : 80), topY * 0.5, sz - (isSmall ? 104 : 94));
+      view.shift = isSmall ? 0 : 0.2;
+      resize();
       uniforms.uRise.value = 0;                 // la montée se rejoue sur le vrai relief
       clock.start();
       if (reduceMotion) { uniforms.uRise.value = 1; render(); }
     })
     .catch(() => { /* relief procédural conservé */ });
 
+  function sceneHeightAt(x, z) {
+    if (!heightGrid) return null;
+    const { N, w, d } = gridInfo;
+    const gx = Math.round((x / w + 0.5) * (N - 1)), gz = Math.round((z / d + 0.5) * (N - 1));
+    if (gx < 0 || gz < 0 || gx >= N || gz >= N) return null;
+    const h = heightGrid[gz * N + gx];
+    return h < 0 ? null : h;
+  }
+
   // ---------- caméra et sonde ----------
-  const target = new THREE.Vector3(0, 3, 0);
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
   const raycaster = new THREE.Raycaster();
   const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -8);
@@ -222,17 +247,33 @@ function initTerrain(canvas) {
     const w = window.innerWidth, h = window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.position.set(0, isSmall ? 15 : 11, isSmall ? 62 : 54);
+    camera.position.copy(view.pos);
     camera.zoom = isSmall ? 0.95 : 1;
+    if (view.shift) camera.setViewOffset(w, h, -w * view.shift, 0, w, h);   // pousse la montagne vers la droite
+    else camera.clearViewOffset();
     camera.updateProjectionMatrix();
-    camera.lookAt(target);
+    camera.lookAt(view.target);
     if (reduceMotion) render();
   }
 
   function updateProbe() {
     if (!hasPointer) return;
     raycaster.setFromCamera(ndc, camera);
-    if (!raycaster.ray.intersectPlane(plane, hit)) return;
+    if (heightGrid) {
+      // marche le long du rayon jusqu'au premier point sous la surface du relevé
+      const o = raycaster.ray.origin, dir = raycaster.ray.direction;
+      let found = false;
+      for (let t = 20; t < 330; t += 0.7) {
+        hit.copy(dir).multiplyScalar(t).add(o);
+        const h = sceneHeightAt(hit.x, hit.z);
+        if (h != null && hit.y <= h) { found = true; break; }
+      }
+      if (!found) {
+        uniforms.uProbe.value.set(999, 0, 999);
+        if (readout) readout.textContent = "—";
+        return;
+      }
+    } else if (!raycaster.ray.intersectPlane(plane, hit)) return;
     uniforms.uProbe.value.copy(hit);
     if (readout) {
       const alt = altitudeAt(hit.x, hit.z);
@@ -240,6 +281,7 @@ function initTerrain(canvas) {
     }
   }
 
+  const _v = new THREE.Vector3();
   const clock = new THREE.Clock();
   let visible = true;
   let lastY = window.scrollY, shake = 0;
@@ -259,12 +301,15 @@ function initTerrain(canvas) {
     uniforms.uTime.value = t;
     uniforms.uShake.value = shake;
     canvas.style.opacity = Math.max(0.32, 1 - y / (window.innerHeight * 0.9)).toFixed(3);
-    camera.position.z = (isSmall ? 62 : 54) - Math.min(y, 4000) * 0.004;
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
-    camera.position.x = mouse.x * 5 + Math.sin(t * 0.15) * 2;
-    camera.position.y = (isSmall ? 15 : 11) + mouse.y * 2;
-    camera.lookAt(target);
+    // le scroll avance la caméra vers la montagne ; la souris et un lent balancement l'orbitent un peu
+    const dolly = Math.min(y, 4000) * 0.0045;
+    const toTarget = _v.copy(view.target).sub(view.pos).normalize();
+    camera.position.copy(view.pos).addScaledVector(toTarget, dolly);
+    camera.position.x += mouse.x * 6 + Math.sin(t * 0.15) * 2.5;
+    camera.position.y += mouse.y * 3;
+    camera.lookAt(view.target);
     updateProbe();
     render();
   }
