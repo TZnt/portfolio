@@ -144,6 +144,7 @@ function initTerrain(canvas) {
     pos: new THREE.Vector3(0, isSmall ? 15 : 11, isSmall ? 62 : 54),
     target: new THREE.Vector3(0, 3, 0),
     shift: 0,
+    shiftY: 0,
   };
   let heightGrid = null;                        // hauteur (unités scène) par cellule, pour la sonde
   let altitudeAt = (x, z) => 412 + heightAt(x, z) * 6.5;
@@ -196,8 +197,9 @@ function initTerrain(canvas) {
       // vue du nord-est, celle de Zermatt : le sommet au centre-droit de l'écran
       const sx = px[top * 3], sz = px[top * 3 + 2];
       view.target.set(sx, topY * 0.56, sz);
-      view.pos.set(sx + (isSmall ? 70 : 80), topY * 0.5, sz - (isSmall ? 104 : 94));
+      view.pos.set(sx + (isSmall ? 104 : 80), topY * 0.5, sz - (isSmall ? 154 : 94));
       view.shift = isSmall ? 0 : 0.2;
+      view.shiftY = isSmall ? 0.2 : 0;           // sur mobile, la montagne monte au-dessus du texte
       resize();
       uniforms.uRise.value = 0;                 // la montée se rejoue sur le vrai relief
       clock.start();
@@ -241,7 +243,7 @@ function initTerrain(canvas) {
     camera.aspect = w / h;
     camera.position.copy(view.pos);
     camera.zoom = isSmall ? 0.95 : 1;
-    if (view.shift) camera.setViewOffset(w, h, -w * view.shift, 0, w, h);   // pousse la montagne vers la droite
+    if (view.shift || view.shiftY) camera.setViewOffset(w, h, -w * view.shift, h * view.shiftY, w, h);   // pousse la montagne vers la droite
     else camera.clearViewOffset();
     camera.updateProjectionMatrix();
     camera.lookAt(view.target);
@@ -305,7 +307,14 @@ function initTerrain(canvas) {
     render();
   }
 
-  window.addEventListener("resize", resize);
+  // sur mobile, la barre d'adresse qui se masque change la hauteur : on ignore ces petits écarts
+  let lastW = window.innerWidth, lastH = window.innerHeight;
+  window.addEventListener("resize", () => {
+    const dw = Math.abs(window.innerWidth - lastW), dh = Math.abs(window.innerHeight - lastH);
+    if (dw === 0 && dh < 140) return;
+    lastW = window.innerWidth; lastH = window.innerHeight;
+    resize();
+  });
     resize();
   if (!reduceMotion) frame();
 }
