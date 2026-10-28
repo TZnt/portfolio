@@ -100,7 +100,7 @@ a { color: inherit; text-underline-offset: 0.2em; }
   display: flex;
   align-items: flex-end;
 }
-#terrain {
+#flow {
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -153,8 +153,6 @@ h1 {
   font-size: 0.95rem;
 }
 .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--mint); flex: none; box-shadow: 0 0 0 4px rgba(25, 195, 154, 0.3); }
-.probe { margin-top: 0.9rem; font-size: 0.9rem; color: var(--soft); }
-.probe output { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 
 /* ---------- sections ---------- */
 .section { padding: clamp(4rem, 9vw, 7.5rem) var(--pad); }
@@ -424,7 +422,6 @@ h3 {
   .tagline { margin: 1rem 0 0.75rem; font-size: 0.95rem; }
   .intro { font-size: 0.95rem; line-height: 1.55; padding: 0.8rem 1rem; }
   .avail { font-size: 0.85rem; padding: 0.5rem 0.9rem; }
-  .probe { display: none; }
 
   .section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
   h2 { margin-bottom: 1.75rem; }
