@@ -80,18 +80,18 @@ function initFlow(canvas) {
 
       float f = fbm(st + r);
 
-      vec3 bg    = vec3(0.925, 0.933, 0.965);       // lilas pâle du site
-      vec3 blue  = vec3(0.208, 0.208, 1.000);
-      vec3 mint  = vec3(0.098, 0.765, 0.604);
-      vec3 sun   = vec3(1.000, 0.784, 0.239);
-      vec3 coral = vec3(1.000, 0.353, 0.235);
+      vec3 bg   = vec3(0.925, 0.933, 0.965);       // lilas pâle du site
+      vec3 mist = vec3(0.742, 0.780, 0.875);       // brume bleutée
+      vec3 slate = vec3(0.470, 0.525, 0.720);      // ardoise
+      vec3 ink  = vec3(0.180, 0.200, 0.400);       // encre du titre, très atténuée
+      vec3 sand = vec3(0.880, 0.835, 0.815);       // seul reflet chaud
 
-      vec3 color = mix(mint, sun, clamp(f * f * 4.0, 0.0, 1.0));
-      color = mix(color, blue, clamp(length(q) - 0.15, 0.0, 1.0) * 0.8);
-      color = mix(color, coral, clamp(r.x - 0.2, 0.0, 1.0) * 0.9);
+      vec3 color = mix(mist, sand, clamp(f * f * 3.0, 0.0, 1.0));
+      color = mix(color, slate, clamp(length(q) - 0.2, 0.0, 1.0) * 0.8);
+      color = mix(color, ink, clamp(r.x - 0.35, 0.0, 1.0) * 0.7);
 
       float k = clamp(f * f * f + 0.6 * f * f + 0.5 * f, 0.0, 1.0);
-      gl_FragColor = vec4(mix(bg, color, k * 0.9), 1.0);
+            gl_FragColor = vec4(mix(bg, color, k * 0.75), 1.0);
     }
   `;
 
