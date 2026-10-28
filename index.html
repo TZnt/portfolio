@@ -5,67 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Théo Zanetti — Développeur, ancien architecte</title>
 <meta name="description" content="Portfolio de Théo Zanetti : développeur en formation à 42 Lausanne, ancien architecte reconverti via la géomatique et la 3D web. Projets, parcours et contact.">
-<meta name="theme-color" content="#0e0e10">
+<meta name="theme-color" content="#eceef6">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<canvas id="terrain" aria-hidden="true"></canvas>
+
 <a class="skip-link" href="#projets">Aller au contenu</a>
 
 <header class="site-header">
-  <div class="wrap header-inner">
-    <a class="brand" href="#top">Théo Zanetti</a>
-    <nav class="nav">
-      <a href="#projets">Projets</a>
-      <a href="#parcours">Parcours</a>
-      <a href="#competences">Compétences</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </div>
+  <a class="brand" href="#top">Théo Zanetti</a>
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="#projets">Projets</a>
+    <a href="#visites">Visites 3D</a>
+    <a href="#parcours">Parcours</a>
+    <a href="#competences">Compétences</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a class="btn btn-primary" href="assets/CV_Theo_Zanetti.pdf" download="CV Théo Zanetti.pdf">CV</a>
 </header>
 
 <main id="top">
 
   <section class="hero">
-    <div class="wrap hero-inner">
-      <div class="hero-grid">
-        <div class="hero-text">
-          <p class="status">
-            En recherche d'un stage de fin de cursus (début 2027), ouvert aussi à un poste de développeur
-            ou à des missions freelance.
-          </p>
-          <h1>Théo<br>Zanetti</h1>
-          <p class="tagline">Développeur, ancien architecte — 42 Lausanne</p>
-          <p class="intro">
-            Architecte de formation, je me suis réorienté vers le développement après plusieurs années à
-            coder des outils informatiques (scripts, plugins, ...) pour l'architecture et la géomatique&nbsp;: SIG, applications web,
-            administration serveur, photogrammétrie, modélisation 3D, pilotage de drone. Je suis actuellement
-            en cours de cursus à 42 Lausanne, où j'approfondis mes connaissances en informatique.
-          </p>
-          <div class="hero-links">
-            <a class="btn btn-primary" href="assets/CV_Theo_Zanetti.pdf" download>Télécharger le CV</a>
-            <a class="btn" href="#projets">Voir les projets</a>
-          </div>
-        </div>
-      </div>
+    <div class="hero-inner">
+      <h1>Théo<br>Zanetti</h1>
+      <p class="tagline">Développeur, ancien architecte. 42&nbsp;Lausanne.</p>
+      <p class="intro">
+        Architecte de formation, je me suis réorienté vers le développement après plusieurs années à
+        coder des outils informatiques (scripts, plugins, ...) pour l'architecture et la géomatique&nbsp;: SIG, applications web,
+        administration serveur, photogrammétrie, modélisation 3D, pilotage de drone. Je suis actuellement
+        en cours de cursus à 42 Lausanne, où j'approfondis mes connaissances en informatique.
+      </p>
+      <p class="avail"><span class="dot"></span>Disponible début 2027 : stage de fin de cursus, poste de développeur ou missions freelance.</p>
+      <p class="probe">Relevé LiDAR réel de Lavaux, canton de Vaud (swisstopo, swissSURFACE3D). Altitude sous le curseur&nbsp;: <output id="probe-out">—</output></p>
     </div>
   </section>
 
-  <section id="projets" class="section">
+<section id="projets" class="section">
     <div class="wrap">
       <h2>Projets</h2>
 
       <article class="plate plate-featured">
-        <canvas class="plate-bg" id="agenda" aria-hidden="true"></canvas>
         <div class="plate-head">
           <h3>Krenolis</h3>
           <div class="plate-status">
-            <span class="tag tag-live">SaaS en production</span>
-            <span class="mono">2026 —</span>
+            <span>SaaS en production</span>
+            <span>2026 —</span>
           </div>
         </div>
         <div class="plate-body">
@@ -82,11 +73,11 @@
             sur l'architecture, la logique métier et la conformité légale.
           </p>
           <ul class="stack">
-            <li><span class="swatch"></span>React</li>
-            <li><span class="swatch"></span>TypeScript</li>
-            <li><span class="swatch"></span>Vite</li>
-            <li><span class="swatch"></span>Firebase (Firestore, Functions, Hosting)</li>
-            <li><span class="swatch"></span>Stripe Connect</li>
+            <li>React</li>
+            <li>TypeScript</li>
+            <li>Vite</li>
+            <li>Firebase (Firestore, Functions, Hosting)</li>
+            <li>Stripe Connect</li>
           </ul>
           <div class="plate-shots">
             <img width="1800" height="963" loading="lazy" decoding="async" src="assets/krenolis-nf525.png" alt="Écran de conformité NF525 : intégrité du journal, clôtures journalières scellées par hachage SHA-256">
@@ -104,8 +95,8 @@
         <div class="plate-head">
           <h3>Opus 2 — visualiseur 3D</h3>
           <div class="plate-status">
-            <span class="tag tag-live">En ligne</span>
-            <span class="mono">2026</span>
+            <span>En ligne</span>
+            <span>2026</span>
           </div>
         </div>
         <div class="plate-body">
@@ -117,9 +108,9 @@
             sur le viewer public d'Aïoli chez MAP-Gamsau.
           </p>
           <ul class="stack">
-            <li><span class="swatch"></span>Three.js</li>
-            <li><span class="swatch"></span>JavaScript</li>
-            <li><span class="swatch"></span>Node.js</li>
+            <li>Three.js</li>
+            <li>JavaScript</li>
+            <li>Node.js</li>
           </ul>
           <div class="plate-shots">
             <img width="1280" height="685" loading="lazy" decoding="async" src="assets/opus2-vue-globale.jpg" alt="Vue d'ensemble du terrain de Syam dans Opus 2 : nuage de points LiDAR coloré par élévation sur fond photoréaliste 3D">
@@ -131,12 +122,11 @@
       </article>
 
       <article class="plate">
-        <canvas class="plate-bg plate-bg-top" id="scene" aria-hidden="true"></canvas>
         <div class="plate-head">
           <h3>DronAge — planification de vols de drone</h3>
           <div class="plate-status">
-            <span class="tag tag-live">En ligne</span>
-            <span class="mono">2023 —</span>
+            <span>En ligne</span>
+            <span>2023 —</span>
           </div>
         </div>
         <div class="plate-body">
@@ -148,12 +138,12 @@
             relevé.
           </p>
           <ul class="stack">
-            <li><span class="swatch"></span>JavaScript</li>
-            <li><span class="swatch"></span>Cesium</li>
-            <li><span class="swatch"></span>Leaflet</li>
-            <li><span class="swatch"></span>Firebase</li>
-            <li><span class="swatch"></span>Stripe</li>
-            <li><span class="swatch"></span>Python (plugin QGIS)</li>
+            <li>JavaScript</li>
+            <li>Cesium</li>
+            <li>Leaflet</li>
+            <li>Firebase</li>
+            <li>Stripe</li>
+            <li>Python (plugin QGIS)</li>
           </ul>
           <div class="plate-shots">
             <img width="1280" height="641" loading="lazy" decoding="async" src="assets/dronage-2d-grid.jpg" alt="Édition d'une grille de vol en 2D sur DronAge, avec calage d'altitude">
@@ -171,8 +161,8 @@
         <div class="plate-head">
           <h3>Projets du tronc commun 42</h3>
           <div class="plate-status">
-            <span class="tag">42 Lausanne</span>
-            <span class="mono">2025 —</span>
+            <span>42 Lausanne</span>
+            <span>2025 —</span>
           </div>
         </div>
         <div class="plate-body">
@@ -190,53 +180,109 @@
     </div>
   </section>
 
+  <section id="visites" class="section">
+    <div class="wrap">
+      <h2>Visites 3D</h2>
+
+      <article class="plate">
+        <div class="plate-head">
+          <h3>Le Mont-Saint-Michel</h3>
+          <div class="plate-status">
+            <span>En ligne</span>
+            <span>2026</span>
+          </div>
+        </div>
+        <div class="plate-body">
+          <p>
+            Une visite 3D annotée du Mont-Saint-Michel, directement dans le navigateur&nbsp;: un scan en
+            gaussian splatting (1,4&nbsp;million de splats) autour duquel flottent des fiches de texte en 3D,
+            qui se placent d'elles-mêmes pour ne jamais masquer le monument. Le vol de caméra d'un repère à
+            l'autre est animé.
+          </p>
+          <ul class="stack">
+            <li>Three.js</li>
+            <li>Spark (gaussian splatting)</li>
+            <li>Pretext</li>
+            <li>Vite</li>
+          </ul>
+          <div class="plate-links">
+            <a href="visites/mont-saint-michel.html">Entrer dans la visite</a>
+          </div>
+          <p class="credit">Scan «&nbsp;Le Mont Saint Michel, France&nbsp;» par <a href="https://superspl.at/user?id=misha_m" target="_blank" rel="noopener">Mykhailo Moroz</a>, licence <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+        </div>
+      </article>
+
+      <article class="plate">
+        <div class="plate-head">
+          <h3>Jardin botanique</h3>
+          <div class="plate-status">
+            <span>En ligne</span>
+            <span>2026</span>
+          </div>
+        </div>
+        <div class="plate-body">
+          <p>
+            Une visite d'un jardin botanique nord-américain, en 2,5&nbsp;millions de splats, avec huit
+            stations consacrées à des espèces représentatives. La visite fonctionne aussi en réalité
+            virtuelle (WebXR)&nbsp;: manettes, sélection des repères et déplacement au joystick.
+          </p>
+          <ul class="stack">
+            <li>Three.js</li>
+            <li>Spark (gaussian splatting)</li>
+            <li>WebXR</li>
+            <li>Vite</li>
+          </ul>
+          <div class="plate-links">
+            <a href="visites/jardin.html">Entrer dans la visite</a>
+          </div>
+          <p class="credit">Scan «&nbsp;Botanical Garden - America v3&nbsp;» par <a href="https://superspl.at/user?id=simonbethke" target="_blank" rel="noopener">Simon Bethke</a>, licence <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section id="parcours" class="section">
     <div class="wrap">
       <h2>Parcours</h2>
       <div class="timeline-wrap">
-        <div class="elevation-rail" aria-hidden="true">
-          <svg viewBox="0 0 40 600" preserveAspectRatio="none" width="100%" height="100%">
-            <path d="M20,0 L20,600" />
-          </svg>
-        </div>
         <ul class="timeline">
           <li class="current">
-            <span class="tl-date mono">2025 —</span>
+            <span class="tl-date">2025 —</span>
             <div class="tl-body">
               <h3>42 Lausanne — Formation développement</h3>
               <p>Pédagogie par projets et par les pairs. C / C++, Unix, algorithmique.</p>
             </div>
           </li>
           <li>
-            <span class="tl-date mono">2023–2024</span>
+            <span class="tl-date">2023–2024</span>
             <div class="tl-body">
               <h3>EN3D — Infographiste 3D</h3>
               <p>Développement d'un plugin QGIS (Python) pour planifier des vols de drone autonomes. Relevés photogrammétriques par drone. Collecte et exploitation de données géographiques.</p>
             </div>
           </li>
           <li>
-            <span class="tl-date mono">2021–2023</span>
+            <span class="tl-date">2021–2023</span>
             <div class="tl-body">
               <h3>MAP-Gamsau — Ingénieur d'études</h3>
               <p>Développement du viewer web public de la plateforme de photogrammétrie et d'annotation du patrimoine Aïoli (JavaScript / Three.js).</p>
             </div>
           </li>
           <li>
-            <span class="tl-date mono">2019–2021</span>
+            <span class="tl-date">2019–2021</span>
             <div class="tl-body">
               <h3>MAP-Aria — Assistant de recherche</h3>
               <p>Mise en place d'un SIG en ligne et collaboratif. Traitement et analyse de données LiDAR. Édition des cartographies présentées dans les rapports d'étude.</p>
             </div>
           </li>
           <li>
-            <span class="tl-date mono">2018–2019</span>
+            <span class="tl-date">2018–2019</span>
             <div class="tl-body">
               <h3>Orizhome — Assistant de projet</h3>
               <p>Modélisation 3D et rendus de projets de paysagisme.</p>
             </div>
           </li>
           <li>
-            <span class="tl-date mono">2019</span>
+            <span class="tl-date">2019</span>
             <div class="tl-body">
               <h3>Diplôme d'État d'Architecte</h3>
               <p>Vaulx-en-Velin.</p>
@@ -253,15 +299,15 @@
       <dl class="skills legend">
         <div class="skills-row">
           <dt>Langages</dt>
-          <dd class="mono">C · C++ · Python · JavaScript · TypeScript · HTML / CSS</dd>
+          <dd>C · C++ · Python · JavaScript · TypeScript · HTML / CSS</dd>
         </div>
         <div class="skills-row">
           <dt>Outils</dt>
-          <dd class="mono">Git · Docker · Node.js · React · Three.js · Cesium · Unix · AWS · Firebase</dd>
+          <dd>Git · Docker · Node.js · React · Three.js · Cesium · Unix · AWS · Firebase</dd>
         </div>
         <div class="skills-row">
           <dt>Géomatique &amp; 3D</dt>
-          <dd class="mono">QGIS · QGIS Server · PostGIS · Blender · SketchUp · RealityScan</dd>
+          <dd>QGIS · QGIS Server · PostGIS · Blender · SketchUp · RealityScan</dd>
         </div>
         <div class="skills-row">
           <dt>Domaines</dt>
@@ -293,13 +339,13 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p class="mono">© <span id="year"></span> Théo Zanetti — Lausanne</p>
+    <p>© <span id="year"></span> Théo Zanetti, Lausanne</p>
   </div>
 </footer>
 
+
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
-<script src="agenda.js"></script>
 <script src="scene.js"></script>
 </body>
 </html>
