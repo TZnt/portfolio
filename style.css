@@ -431,7 +431,7 @@ main { container-type: inline-size; }
 
 .elevation-rail {
   position: absolute;
-  left: -2px;
+  left: 18px;
   top: 0;
   bottom: 0;
   width: 20px;
