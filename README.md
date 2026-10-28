@@ -21,7 +21,7 @@ Site statique en HTML / CSS / JavaScript, sans étape de build ni dépendance à
 ├── style.css       # styles
 ├── script.js       # menu, visionneuse d'images, lancement des visites 3D
 ├── hero.js         # shader WebGL du fond animé
-├── assets/         # captures, CV (PDF) et cervin.bin (nuage de points réduit)
+├── assets/         # captures et CV (PDF)
 └── visites/        # visites 3D (build Vite) et leurs scènes .sog
 ```
 
