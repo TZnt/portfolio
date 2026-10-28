@@ -8,7 +8,7 @@ Site statique en HTML / CSS / JavaScript, sans étape de build ni dépendance à
 
 ## Contenu
 
-- **Hero** : un vrai relevé LiDAR du Cervin (swisstopo swissSURFACE3D), en fond permanent. Il tremble au scroll et la souris lit l'altitude sous le curseur.
+- **Hero** : un vrai relevé LiDAR du Cervin (swisstopo swissSURFACE3D), en fond permanent. Il tourne au scroll et la souris lit l'altitude sous le curseur.
 - **Projets** : Krenolis, Opus 2, DronAge, projets du tronc commun 42, avec captures agrandissables.
 - **Visites 3D** : le Mont-Saint-Michel et un jardin botanique, en gaussian splatting, lancées directement dans la page.
 - **Parcours**, **Compétences**, **Contact** et téléchargement du CV.

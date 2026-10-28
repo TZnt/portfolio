@@ -75,8 +75,6 @@ function initTerrain(canvas) {
   const uniforms = {
     uRise: { value: reduceMotion ? 1 : 0 },
     uProbe: { value: new THREE.Vector3(999, 0, 999) },
-    uTime: { value: 0 },
-    uShake: { value: 0 },
     uSize: { value: (isSmall ? 70 : 90) * renderer.getPixelRatio() },
   };
 
@@ -87,7 +85,7 @@ function initTerrain(canvas) {
     vertexShader: `
       attribute float h;
       attribute float k;
-      uniform float uRise, uSize, uTime, uShake;
+      uniform float uRise, uSize;
       uniform vec3 uProbe;
       varying vec3 vColor;
       varying float vContour;
@@ -107,12 +105,6 @@ function initTerrain(canvas) {
         float rise = smoothstep(0.0, 1.0, clamp(uRise * 1.6 - h * 0.6, 0.0, 1.0));
         vec3 p = position;
         p.y *= rise;
-
-        // tremblement de terre : secousses déphasées selon la position, proportionnelles à la vitesse de scroll
-        float q = sin(position.x * 2.3 + uTime * 47.0) * cos(position.z * 1.9 + uTime * 41.0);
-        p.y += q * uShake * 0.9;
-        p.x += sin(position.z * 3.1 + uTime * 53.0) * uShake * 0.35;
-        p.z += cos(position.x * 2.7 + uTime * 59.0) * uShake * 0.35;
 
         float d = distance(p.xz, uProbe.xz);
         float near = smoothstep(5.0, 0.0, d);
@@ -284,7 +276,7 @@ function initTerrain(canvas) {
   const _v = new THREE.Vector3();
   const clock = new THREE.Clock();
   let visible = true;
-  let lastY = window.scrollY, shake = 0;
+  let spin = 0;
   function render() {
     renderer.render(scene, camera);
   }
@@ -294,21 +286,20 @@ function initTerrain(canvas) {
     const t = clock.getElapsedTime();
     uniforms.uRise.value = Math.min(1, t / 2.2);
 
-    // vitesse de scroll -> secousse (amortie) ; le terrain s'estompe hors du hero pour garder le texte lisible
+    // le scroll fait tourner la montagne (la caméra orbite autour du sommet) ; le terrain s'estompe hors du hero pour garder le texte lisible
     const y = window.scrollY;
-    shake = Math.min(1.6, shake * 0.9 + Math.abs(y - lastY) * 0.012);
-    lastY = y;
-    uniforms.uTime.value = t;
-    uniforms.uShake.value = shake;
     canvas.style.opacity = Math.max(0.32, 1 - y / (window.innerHeight * 0.9)).toFixed(3);
+    spin += (y * 0.0011 - spin) * 0.07;
     mouse.x += (mouse.tx - mouse.x) * 0.05;
     mouse.y += (mouse.ty - mouse.y) * 0.05;
-    // le scroll avance la caméra vers la montagne ; la souris et un lent balancement l'orbitent un peu
-    const dolly = Math.min(y, 4000) * 0.0045;
-    const toTarget = _v.copy(view.target).sub(view.pos).normalize();
-    camera.position.copy(view.pos).addScaledVector(toTarget, dolly);
-    camera.position.x += mouse.x * 6 + Math.sin(t * 0.15) * 2.5;
-    camera.position.y += mouse.y * 3;
+    _v.copy(view.pos).sub(view.target);
+    const cos = Math.cos(spin), sin = Math.sin(spin);
+    camera.position.set(
+      view.target.x + _v.x * cos + _v.z * sin,
+      view.pos.y + mouse.y * 3,
+      view.target.z - _v.x * sin + _v.z * cos
+    );
+    camera.position.x += mouse.x * 4;
     camera.lookAt(view.target);
     updateProbe();
     render();
