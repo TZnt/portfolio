@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Théo Zanetti — Développeur, ancien architecte</title>
-<meta name="description" content="Portfolio de Théo Zanetti : développeur en formation à 42 Lausanne, ancien architecte reconverti via la géomatique et la 3D web. Projets, parcours et contact.">
+<title>Théo Zanetti — Développeur, cloud et cybersécurité</title>
+<meta name="description" content="Théo Zanetti, étudiant à 42 Lausanne et ancien architecte : développement, Docker, CI/CD et réseaux. Recherche un stage en cloud et cybersécurité dès mars 2027.">
 <meta name="theme-color" content="#eceef6">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,14 +35,14 @@
   <section class="hero">
     <div class="hero-inner">
       <h1>Théo<br>Zanetti</h1>
-      <p class="tagline">Développeur, ancien architecte. 42&nbsp;Lausanne.</p>
+      <p class="tagline">Développeur en reconversion, ancien architecte. Cloud et cybersécurité.</p>
       <p class="intro">
-        Architecte de formation, je me suis réorienté vers le développement après plusieurs années à
-        coder des outils informatiques (scripts, plugins, ...) pour l'architecture et la géomatique&nbsp;: SIG, applications web,
-        administration serveur, photogrammétrie, modélisation 3D, pilotage de drone. Je suis actuellement
-        en cours de cursus à 42 Lausanne, où j'approfondis mes connaissances en informatique.
+        Architecte de formation, je suis passé au développement après plusieurs années à coder des outils
+        pour l'architecture et la géomatique&nbsp;: SIG, applications web, administration serveur,
+        photogrammétrie, pilotage de drone. Étudiant à 42 Lausanne, je me concentre maintenant sur
+        l'infrastructure&nbsp;: conteneurs, pipelines de déploiement, réseaux et sécurité.
       </p>
-      <p class="avail"><span class="dot"></span>Disponible début 2027 : stage de fin de cursus, poste de développeur ou missions freelance.</p>
+      <p class="avail"><span class="dot"></span>Stage recherché dès mars / avril 2027 en cloud et cybersécurité (DevSecOps), en région Genève / Lausanne.</p>
     </div>
   </section>
 
@@ -62,14 +62,24 @@
           <p>
             Une plateforme de réservation, planning d'équipes, encaissement et facturation pour les
             activités saisonnières qui emploient des intervenants indépendants&nbsp;: écoles de ski, écoles
-            de musique, studios de yoga, centres équestres, ... Elle résout des problèmes que les outils génériques ignorent —
-            un moniteur indépendant qui travaille pour deux établissements clients ne peut pas être réservé au même
-            horaire sur les deux, sans qu'aucune des deux structures ne voie le planning de l'autre ;
-            la tarification bascule seule en haute/basse saison ; la conformité fiscale française (NF525,
-            facturation séquentielle) est intégrée par défaut, pas en option. Développé en marge de mon
-            cursus à 42 pour explorer un sujet qui me tient à cœur au-delà du cadre pédagogique de l'école,
-            en m'appuyant largement sur des outils d'IA pour l'implémentation afin de concentrer mon temps
-            sur l'architecture, la logique métier et la conformité légale.
+            de musique, studios de yoga, centres équestres... Elle résout des problèmes que les outils
+            génériques ignorent&nbsp;: un moniteur indépendant qui travaille pour deux établissements ne peut
+            pas être réservé au même horaire sur les deux, sans qu'aucun ne voie le planning de l'autre&nbsp;;
+            la tarification bascule seule en haute et basse saison&nbsp;; la conformité fiscale française
+            (NF525, facturation séquentielle) est intégrée par défaut.
+          </p>
+          <p>
+            Côté infrastructure, deux workflows GitHub Actions. L'intégration continue lance le lint, le
+            typecheck et les tests du front et des Cloud Functions. Le déploiement envoie chaque push sur
+            <code>main</code> en staging&nbsp;; la démo et la production se déclenchent à la main. Les secrets sont
+            stockés par environnement dans GitHub et écrits dans un fichier exclu de git au moment du
+            déploiement. Les règles Firestore refusent tout par défaut&nbsp;: paiements et facturation ne sont
+            écrits que côté serveur.
+          </p>
+          <p>
+            Développé en marge de mon cursus à 42, en m'appuyant largement sur des outils d'IA pour
+            l'implémentation, afin de concentrer mon temps sur l'architecture, la logique métier, la
+            conformité légale et le pipeline.
           </p>
           <ul class="stack">
             <li>React</li>
@@ -77,6 +87,7 @@
             <li>Vite</li>
             <li>Firebase (Firestore, Functions, Hosting)</li>
             <li>Stripe Connect</li>
+            <li>GitHub Actions</li>
           </ul>
           <div class="plate-shots">
             <img width="1800" height="963" loading="lazy" decoding="async" src="assets/krenolis-nf525.png" alt="Écran de conformité NF525 : intégrité du journal, clôtures journalières scellées par hachage SHA-256">
@@ -89,6 +100,47 @@
           </div>
         </div>
       </article>
+
+      <article class="plate">
+        <div class="plate-head">
+          <h3>Projets de 42 : infrastructure et réseaux</h3>
+          <div class="plate-status">
+            <span>42 Lausanne</span>
+            <span>2025 —</span>
+          </div>
+        </div>
+        <div class="plate-body">
+          <p>
+            Pédagogie par projets et évaluation par les pairs. Trois projets comptent pour ma recherche de
+            stage en infrastructure, et le prochain, webserv, sera un serveur HTTP en C++.
+          </p>
+          <ul class="subprojects">
+            <li>
+              <h4>Inception</h4>
+              <p>
+                Une petite infrastructure en Docker Compose&nbsp;: NGINX comme unique point d'entrée en HTTPS
+                (TLS 1.2 et 1.3, certificat auto-signé), WordPress avec PHP-FPM, auquel NGINX parle en
+                FastCGI, et MariaDB. Secrets Docker, volumes nommés et réseau bridge dédié.
+              </p>
+            </li>
+            <li>
+              <h4>NetPractice</h4>
+              <p>Adressage IPv4, masques CIDR, sous-réseaux, rôle des routeurs et tables de routage.</p>
+            </li>
+            <li>
+              <h4>Minishell</h4>
+              <p>
+                Un shell en C, réalisé en binôme&nbsp;: analyse de la ligne de commande, builtins,
+                redirections, pipes, <code>&amp;&amp;</code> et <code>||</code>, signaux et heredoc.
+              </p>
+            </li>
+          </ul>
+          <div class="plate-links">
+            <a href="https://github.com/TZnt" target="_blank" rel="noopener">Voir le profil GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </article>
+
 
       <article class="plate">
         <div class="plate-head">
@@ -156,25 +208,6 @@
         </div>
       </article>
 
-      <article class="plate">
-        <div class="plate-head">
-          <h3>Projets du tronc commun 42</h3>
-          <div class="plate-status">
-            <span>42 Lausanne</span>
-            <span>2025 —</span>
-          </div>
-        </div>
-        <div class="plate-body">
-          <p>
-            Piscine C, algorithmique bas niveau, gestion mémoire, administration Unix, projets système
-            développés en évaluation par les pairs. Le détail de chaque projet est disponible sur mon
-            profil GitHub.
-          </p>
-          <div class="plate-links">
-            <a href="https://github.com/TZnt" target="_blank" rel="noopener">Voir le profil GitHub <span aria-hidden="true">↗</span></a>
-          </div>
-        </div>
-      </article>
 
     </div>
   </section>
@@ -257,7 +290,7 @@
             <span class="tl-date">2025 —</span>
             <div class="tl-body">
               <h3>42 Lausanne — Formation développement</h3>
-              <p>Pédagogie par projets et par les pairs. C / C++, Unix, algorithmique.</p>
+              <p>Pédagogie par projets et par les pairs. C / C++, Unix, algorithmique, systèmes et réseaux.</p>
             </div>
           </li>
           <li>
@@ -309,8 +342,16 @@
           <dd>C · C++ · Python · JavaScript · TypeScript · HTML / CSS</dd>
         </div>
         <div class="skills-row">
+          <dt>Cloud &amp; DevOps</dt>
+          <dd>Docker · Docker Compose · GitHub Actions (CI/CD) · Firebase / Google Cloud · AWS · NGINX · Linux</dd>
+        </div>
+        <div class="skills-row">
+          <dt>Réseaux &amp; sécurité</dt>
+          <dd>TCP/IP · HTTP · TLS · adressage IPv4, CIDR et routage · gestion des secrets · règles d'accès refusées par défaut</dd>
+        </div>
+        <div class="skills-row">
           <dt>Outils</dt>
-          <dd>Git · Docker · Node.js · React · Three.js · Cesium · Unix · AWS · Firebase</dd>
+          <dd>Git · Node.js · React · Three.js · Cesium · Unix</dd>
         </div>
         <div class="skills-row">
           <dt>Géomatique &amp; 3D</dt>
@@ -318,11 +359,11 @@
         </div>
         <div class="skills-row">
           <dt>Domaines</dt>
-          <dd>Systèmes d'information géographique, photogrammétrie, pilotage de drone, 3D web, administration serveur, développement web full-stack.</dd>
+          <dd>Infrastructure et déploiement continu, administration serveur, développement web full-stack, systèmes d'information géographique, photogrammétrie, 3D web.</dd>
         </div>
         <div class="skills-row">
           <dt>Langues</dt>
-          <dd>Anglais B2 · Allemand A2</dd>
+          <dd>Français · Anglais B2 · Allemand A2</dd>
         </div>
       </dl>
     </div>
@@ -332,7 +373,7 @@
     <div class="wrap">
       <h2>Contact</h2>
       <div class="stamp">
-        <p class="contact-intro">Stage, poste de développeur ou mission freelance — n'hésitez pas à me contacter.</p>
+        <p class="contact-intro">Je cherche un stage dès mars / avril 2027 en cloud et cybersécurité, en région Genève / Lausanne. Écrivez-moi, même pour une première prise de contact.</p>
         <dl class="contact-list">
           <div class="contact-row"><dt>Email</dt><dd><a href="mailto:zanetti.theo@gmail.com">zanetti.theo@gmail.com</a></dd></div>
           <div class="contact-row"><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/theo-zanetti" target="_blank" rel="noopener">linkedin.com/in/theo-zanetti <span aria-hidden="true">↗</span></a></dd></div>
