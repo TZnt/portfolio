@@ -8,7 +8,7 @@ Site statique en HTML / CSS / JavaScript, sans étape de build ni dépendance à
 
 ## Contenu
 
-- **Hero** : un fond animé en shader (domain warping de bruit fractal), qui réagit à la souris et glisse au scroll.
+- **Hero** : un fond animé en shader (domain warping de bruit fractal découpé en bandes marbrées), qui réagit à la souris et glisse au scroll.
 - **Projets** : Krenolis, Opus 2, DronAge, projets du tronc commun 42, avec captures agrandissables.
 - **Visites 3D** : le Mont-Saint-Michel et un jardin botanique, en gaussian splatting, lancées directement dans la page.
 - **Parcours**, **Compétences**, **Contact** et téléchargement du CV.

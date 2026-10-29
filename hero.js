@@ -21,109 +21,47 @@ function initFlow(canvas) {
     void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
   `;
 
-  // plusieurs fonds au choix : ?fond=lignes | points | cellules | grille | pavage | brume
-  const FONDS = {
-    // courbes de niveau d'un bruit fractal, qui dérive lentement
-    lignes: `
-      vec2 st = vec2(uv.x * aspect, uv.y) * 1.5;
-      st.y += u_scroll * 0.6;
-      float n = fbm(st + vec2(0.0, u_time * 0.03) + m * 0.4);
-      float v = n * 16.0;
-      float d = min(fract(v), 1.0 - fract(v));
-      float line = 1.0 - smoothstep(0.03, 0.09, d);
-      float major = step(mod(floor(v + 0.5), 5.0), 0.5);       // une courbe maîtresse sur cinq
-      float near = smoothstep(0.35, 0.0, distance(vec2(uv.x * aspect, uv.y), vec2(u_mouse.x * aspect, u_mouse.y)));
-      vec3 c = mix(ink, accent, near);
-      float a = line * mix(0.22, 0.55, major);
-      gl_FragColor = vec4(mix(bg, c, a), 1.0);
-    `,
-    // trame de points dont la taille suit un bruit, façon demi-teinte
-    points: `
-      float N = ${isSmall ? "34.0" : "64.0"};
-      vec2 p = vec2(uv.x * aspect, uv.y) * N;
-      vec2 id = floor(p);
-      vec2 f = fract(p) - 0.5;
-      vec2 c0 = (id + 0.5) / N;
-      float n = fbm(c0 * 2.2 + vec2(u_time * 0.04, u_scroll * 0.5));
-      float near = smoothstep(0.3, 0.0, distance(c0, vec2(u_mouse.x * aspect, u_mouse.y)));
-      float r = clamp((n - 0.25) * 1.25 + near * 0.35, 0.0, 0.5);
-      float dot = 1.0 - smoothstep(r - 0.07, r, length(f));
-      vec3 c = mix(ink, accent, near);
-      gl_FragColor = vec4(mix(bg, c, dot * 0.55), 1.0);
-    `,
-    // diagramme de Voronoï : cellules aux germes mobiles, arêtes fines
-    cellules: `
-      vec2 p = vec2(uv.x * aspect, uv.y) * ${isSmall ? "4.0" : "6.0"};
-      p.y += u_scroll * 1.5;
-      vec2 mp = vec2(u_mouse.x * aspect, u_mouse.y) * ${isSmall ? "4.0" : "6.0"};
-      vec2 ip = floor(p), fp = fract(p);
-      float d1 = 8.0, d2 = 8.0; vec2 best = vec2(0.0);
-      for (int j = -1; j <= 1; j++) {
-        for (int i = -1; i <= 1; i++) {
-          vec2 g = vec2(float(i), float(j));
-          vec2 o = vec2(random(ip + g), random(ip + g + 17.0));
-          o = 0.5 + 0.42 * sin(u_time * 0.5 + 6.2831 * o);
-          vec2 pos = ip + g + o;
-          pos += normalize(pos - mp + 0.001) * 0.45 * exp(-distance(pos, mp) * 1.4);   // les germes fuient la souris
-          float d = distance(p, pos);
-          if (d < d1) { d2 = d1; d1 = d; best = ip + g; } else if (d < d2) { d2 = d; }
-        }
-      }
-      float edge = 1.0 - smoothstep(0.0, 0.06, d2 - d1);
-      float shade = random(best) * 0.07;
-      vec3 base = bg - shade;
-      gl_FragColor = vec4(mix(base, ink, edge * 0.45), 1.0);
-    `,
-    // grille fine qui se déforme autour de la souris, comme sous une lentille
-    grille: `
-      vec2 a = vec2(uv.x * aspect, uv.y);
-      vec2 mp = vec2(u_mouse.x * aspect, u_mouse.y);
-      vec2 dv = a - mp;
-      float lens = exp(-dot(dv, dv) * 9.0);
-      vec2 p = a - dv * lens * 0.55;
-      p.y += sin(a.x * 2.4 + u_time * 0.35) * 0.035 + u_scroll * 0.4;
-      p.x += cos(a.y * 2.0 + u_time * 0.3) * 0.03;
-      p *= ${isSmall ? "9.0" : "16.0"};
-      vec2 g = abs(fract(p) - 0.5);
-      float line = 1.0 - smoothstep(0.0, 0.035, min(0.5 - g.x, 0.5 - g.y));
-      float node = 1.0 - smoothstep(0.05, 0.11, length(0.5 - g));
-      vec3 c = mix(ink, accent, lens);
-      gl_FragColor = vec4(mix(bg, c, max(line * 0.28, node * 0.7)), 1.0);
-    `,
-    // pavage de Truchet : quarts de cercle qui se retournent près de la souris
-    pavage: `
-      vec2 p = vec2(uv.x * aspect, uv.y) * ${isSmall ? "6.0" : "10.0"};
-      p.y += u_scroll * 3.0;
-      vec2 mp = vec2(u_mouse.x * aspect, u_mouse.y) * ${isSmall ? "6.0" : "10.0"};
-      vec2 id = floor(p), f = fract(p);
-      float near = smoothstep(2.2, 0.0, distance(id + 0.5, mp + vec2(0.0, u_scroll * 3.0)));
-      float flip = step(0.5, fract(random(id) + near * 0.5 + floor(u_time * 0.12 + random(id + 3.0))));
-      if (flip > 0.5) f.x = 1.0 - f.x;
-      float r1 = abs(length(f) - 0.5);
-      float r2 = abs(length(f - 1.0) - 0.5);
-      float line = 1.0 - smoothstep(0.012, 0.05, min(r1, r2));
-      vec3 c = mix(ink, accent, near);
-      gl_FragColor = vec4(mix(bg, c, line * 0.4), 1.0);
-    `,
-    // l'ancien fond : domain warping de bruit fractal (Patricio Gonzalez Vivo)
-    brume: `
-      vec2 st = vec2(uv.x * aspect, uv.y) * ${isSmall ? "2.2" : "2.8"};
-      st.y += u_scroll * 0.9;
+  // Fond : le domain warping de Patricio Gonzalez Vivo, mais découpé en bandes nettes aux contours d'encre
+  // (papier marbré) plutôt qu'en dégradé flou, pour éviter l'effet de fumée.
+  const BODY = `
+      vec2 st = vec2(uv.x * aspect, uv.y) * ${isSmall ? "2.0" : "2.6"};
+      st.y += u_scroll * 0.9;                       // le scroll fait glisser le flux
+
       vec2 q = vec2(fbm(st), fbm(st + vec2(1.0)));
-      vec2 r = vec2(fbm(st + q + vec2(1.7, 9.2) + 0.15 * u_time + m), fbm(st + q + vec2(8.3, 2.8) + 0.126 * u_time - m));
+      vec2 r = vec2(
+        fbm(st + q + vec2(1.7, 9.2) + 0.15 * u_time + m),   // la souris infléchit la déformation
+        fbm(st + q + vec2(8.3, 2.8) + 0.126 * u_time - m)
+      );
       float f = fbm(st + r);
-      vec3 mist = vec3(0.742, 0.780, 0.875), slate = vec3(0.470, 0.525, 0.720), sand = vec3(0.880, 0.835, 0.815);
-      vec3 color = mix(mist, sand, clamp(f * f * 3.0, 0.0, 1.0));
-      color = mix(color, slate, clamp(length(q) - 0.2, 0.0, 1.0) * 0.8);
-      color = mix(color, vec3(0.18, 0.2, 0.4), clamp(r.x - 0.35, 0.0, 1.0) * 0.7);
-      float k = clamp(f * f * f + 0.6 * f * f + 0.5 * f, 0.0, 1.0);
-      gl_FragColor = vec4(mix(bg, color, k * 0.75), 1.0);
-    `,
-  };
-  // les fonds à traits fins sont calculés en pleine résolution, les fonds flous à demi-résolution
-  const SHARP = { lignes: 1, points: 1, cellules: 1, grille: 1, pavage: 1, brume: 0 };
-  const fond = new URLSearchParams(location.search).get("fond");
-  const kind = FONDS[fond] ? fond : "lignes";
+
+      // bandes : chaque palier de f prend une teinte plate de la palette
+      float v = f * 7.0;
+      float id = floor(v);
+      float fr = fract(v);
+      vec3 pal[4];
+      pal[0] = vec3(0.925, 0.933, 0.965);           // lilas pâle du site
+      pal[1] = vec3(0.835, 0.855, 0.935);           // brume bleutée
+      pal[2] = vec3(0.760, 0.790, 0.890);           // bleu doux
+      pal[3] = vec3(0.880, 0.885, 0.925);           // gris-bleu neutre
+      int k = int(mod(id, 4.0));
+      vec3 band = pal[0];
+      if (k == 1) band = pal[1];
+      else if (k == 2) band = pal[2];
+      else if (k == 3) band = pal[3];
+
+      // fin liseré d'encre sur chaque frontière, plus appuyé toutes les quatre
+      float edge = 1.0 - smoothstep(0.0, 0.045, min(fr, 1.0 - fr));
+      float strong = step(mod(floor(v + 0.5), 4.0), 0.5);
+      vec3 col = mix(band, ink, edge * mix(0.16, 0.42, strong));
+
+      // une pointe de bleu du site près de la souris
+      float near = smoothstep(0.3, 0.0, distance(vec2(uv.x * aspect, uv.y), vec2(u_mouse.x * aspect, u_mouse.y)));
+      col = mix(col, accent, near * edge * 0.6);
+
+      // grain léger : casse l'aspect lisse
+      col += (random(gl_FragCoord.xy + floor(u_time * 8.0)) - 0.5) * 0.018;
+      gl_FragColor = vec4(col, 1.0);
+  `;
 
   const fragment = `
     #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -172,10 +110,9 @@ function initFlow(canvas) {
       vec2 uv = gl_FragCoord.xy / u_resolution.xy;
       float aspect = u_resolution.x / u_resolution.y;
       vec2 m = (u_mouse - 0.5) * 1.6;
-      vec3 bg     = vec3(0.925, 0.933, 0.965);   // lilas pâle du site
       vec3 ink    = vec3(0.051, 0.063, 0.188);   // encre du titre
       vec3 accent = vec3(0.208, 0.208, 1.000);   // bleu du site, en touche
-      ${FONDS[kind]}
+      ${BODY}
     }
   `;
 
@@ -205,9 +142,9 @@ function initFlow(canvas) {
   const uTime = gl.getUniformLocation(prog, "u_time");
   const uScroll = gl.getUniformLocation(prog, "u_scroll");
 
-  // fonds flous : calcul à basse résolution, le navigateur adoucit l'agrandissement
+  // bandes nettes : calcul en pleine résolution (dpr plafonné)
   const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  const scale = SHARP[kind] ? (isSmall ? Math.min(dpr, 1.25) : dpr) : isSmall ? 0.35 : 0.5;
+  const scale = isSmall ? Math.min(dpr, 1.25) : dpr;
   function resize() {
     const w = Math.max(2, Math.round(window.innerWidth * scale));
     const h = Math.max(2, Math.round(window.innerHeight * scale));
