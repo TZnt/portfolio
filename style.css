@@ -5,7 +5,7 @@
   --soft: #4d5275;
   --line: #d3d7e8;
 
-  --blue: #3535ff;
+  --blue: #358dff;
   --coral: #ff5a3c;
   --mint: #19c39a;
   --sun: #ffc83d;
@@ -233,7 +233,7 @@ h3 {
 .plate-links a:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
 
 /* panneau vedette : Krenolis */
-.plate-featured { background: var(--blue); color: #fff; }
+.plate-featured { background: var(--ink); color: #fff; }
 .plate-featured .plate-status span:last-child { color: rgba(255, 255, 255, 0.75); }
 .plate-featured .plate-links a:hover { background: #fff; border-color: #fff; color: var(--blue); }
 /* couleurs de statut par projet */
