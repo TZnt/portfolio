@@ -1,6 +1,6 @@
 // Fond du hero : domain warping de bruit fractal, en un seul fragment shader plein écran.
-// Bruit et fbm : Patricio Gonzalez Vivo (2015), http://patriciogonzalezvivo.com,
-// d'après Morgan McGuire (https://www.shadertoy.com/view/4dS3Wd). Fonds, palette et interactions adaptés.
+// Shader d'origine : Patricio Gonzalez Vivo (2015), http://patriciogonzalezvivo.com,
+// d'après Morgan McGuire (https://www.shadertoy.com/view/4dS3Wd). Palette et interactions adaptées.
 const flowCanvas = document.getElementById("flow");
 if (flowCanvas) {
   try {
@@ -21,48 +21,6 @@ function initFlow(canvas) {
     void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
   `;
 
-  // Fond : le domain warping de Patricio Gonzalez Vivo, mais découpé en bandes nettes aux contours d'encre
-  // (papier marbré) plutôt qu'en dégradé flou, pour éviter l'effet de fumée.
-  const BODY = `
-      vec2 st = vec2(uv.x * aspect, uv.y) * ${isSmall ? "2.0" : "2.6"};
-      st.y += u_scroll * 0.9;                       // le scroll fait glisser le flux
-
-      vec2 q = vec2(fbm(st), fbm(st + vec2(1.0)));
-      vec2 r = vec2(
-        fbm(st + q + vec2(1.7, 9.2) + 0.15 * u_time + m),   // la souris infléchit la déformation
-        fbm(st + q + vec2(8.3, 2.8) + 0.126 * u_time - m)
-      );
-      float f = fbm(st + r);
-
-      // bandes : chaque palier de f prend une teinte plate de la palette
-      float v = f * 7.0;
-      float id = floor(v);
-      float fr = fract(v);
-      vec3 pal[4];
-      pal[0] = vec3(0.925, 0.933, 0.965);           // lilas pâle du site
-      pal[1] = vec3(0.835, 0.855, 0.935);           // brume bleutée
-      pal[2] = vec3(0.760, 0.790, 0.890);           // bleu doux
-      pal[3] = vec3(0.880, 0.885, 0.925);           // gris-bleu neutre
-      int k = int(mod(id, 4.0));
-      vec3 band = pal[0];
-      if (k == 1) band = pal[1];
-      else if (k == 2) band = pal[2];
-      else if (k == 3) band = pal[3];
-
-      // fin liseré d'encre sur chaque frontière, plus appuyé toutes les quatre
-      float edge = 1.0 - smoothstep(0.0, 0.045, min(fr, 1.0 - fr));
-      float strong = step(mod(floor(v + 0.5), 4.0), 0.5);
-      vec3 col = mix(band, ink, edge * mix(0.16, 0.42, strong));
-
-      // une pointe de bleu du site près de la souris
-      float near = smoothstep(0.3, 0.0, distance(vec2(uv.x * aspect, uv.y), vec2(u_mouse.x * aspect, u_mouse.y)));
-      col = mix(col, accent, near * edge * 0.6);
-
-      // grain léger : casse l'aspect lisse
-      col += (random(gl_FragCoord.xy + floor(u_time * 8.0)) - 0.5) * 0.018;
-      gl_FragColor = vec4(col, 1.0);
-  `;
-
   const fragment = `
     #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
@@ -77,7 +35,6 @@ function initFlow(canvas) {
     uniform float u_time;
     uniform float u_scroll;
 
-    // bruit et fbm : Patricio Gonzalez Vivo (2015), d'après Morgan McGuire
     float random(in vec2 _st) {
       return fract(sin(dot(_st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
     }
@@ -108,11 +65,33 @@ function initFlow(canvas) {
 
     void main() {
       vec2 uv = gl_FragCoord.xy / u_resolution.xy;
-      float aspect = u_resolution.x / u_resolution.y;
-      vec2 m = (u_mouse - 0.5) * 1.6;
-      vec3 ink    = vec3(0.051, 0.063, 0.188);   // encre du titre
-      vec3 accent = vec3(0.208, 0.208, 1.000);   // bleu du site, en touche
-      ${BODY}
+      // le motif garde ses proportions quel que soit l'écran
+      vec2 st = vec2(uv.x * u_resolution.x / u_resolution.y, uv.y) * ${isSmall ? "2.2" : "2.8"};
+      st.y += u_scroll * 0.9;                       // le scroll fait glisser le flux
+      vec2 m = (u_mouse - 0.5) * 1.6;               // la souris infléchit la déformation
+
+      vec2 q = vec2(0.0);
+      q.x = fbm(st);
+      q.y = fbm(st + vec2(1.0));
+
+      vec2 r = vec2(0.0);
+      r.x = fbm(st + 1.0 * q + vec2(1.7, 9.2) + 0.15 * u_time + m);
+      r.y = fbm(st + 1.0 * q + vec2(8.3, 2.8) + 0.126 * u_time - m);
+
+      float f = fbm(st + r);
+
+      vec3 bg   = vec3(0.925, 0.933, 0.965);       // lilas pâle du site
+      vec3 mist = vec3(0.742, 0.780, 0.875);       // brume bleutée
+      vec3 slate = vec3(0.470, 0.525, 0.720);      // ardoise
+      vec3 ink  = vec3(0.180, 0.200, 0.400);       // encre du titre, très atténuée
+      vec3 sand = vec3(0.880, 0.835, 0.815);       // seul reflet chaud
+
+      vec3 color = mix(mist, sand, clamp(f * f * 3.0, 0.0, 1.0));
+      color = mix(color, slate, clamp(length(q) - 0.2, 0.0, 1.0) * 0.8);
+      color = mix(color, ink, clamp(r.x - 0.35, 0.0, 1.0) * 0.7);
+
+      float k = clamp(f * f * f + 0.6 * f * f + 0.5 * f, 0.0, 1.0);
+            gl_FragColor = vec4(mix(bg, color, k * 0.75), 1.0);
     }
   `;
 
@@ -142,9 +121,8 @@ function initFlow(canvas) {
   const uTime = gl.getUniformLocation(prog, "u_time");
   const uScroll = gl.getUniformLocation(prog, "u_scroll");
 
-  // bandes nettes : calcul en pleine résolution (dpr plafonné)
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  const scale = isSmall ? Math.min(dpr, 1.25) : dpr;
+  // le shader est doux : on le calcule à basse résolution, le navigateur adoucit l'agrandissement
+  const scale = isSmall ? 0.35 : 0.5;
   function resize() {
     const w = Math.max(2, Math.round(window.innerWidth * scale));
     const h = Math.max(2, Math.round(window.innerHeight * scale));
